@@ -2,6 +2,12 @@ import axios from 'axios';
 
 const rawUrl = import.meta.env.VITE_BACKEND_URL || '';
 const cleanUrl = rawUrl.replace(/\/+$/, ''); // Remove trailing slashes
+
+export const getBackendUrl = (path) => {
+  const cleanPath = (path || '').replace(/^\/+/, '');
+  return `${cleanUrl}/${cleanPath}`;
+};
+
 const finalUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
 const api = axios.create({

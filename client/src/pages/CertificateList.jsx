@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus, FileText, XCircle, FileSpreadsheet } from 'lucide-react';
-import api from '../services/api';
+import api, { getBackendUrl } from '../services/api';
 import toast from 'react-hot-toast';
 import BulkUploadModal from '../components/BulkUploadModal';
 
@@ -109,7 +109,7 @@ export default function CertificateList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.programName}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <a href={`${import.meta.env.VITE_BACKEND_URL}/${cert.pdfPath}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
+                        <a href={getBackendUrl(cert.pdfPath)} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
                           <FileText size={20} />
                         </a>
                         {cert.status === 'Verified' && (

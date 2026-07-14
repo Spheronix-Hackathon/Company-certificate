@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { X, Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Play } from 'lucide-react';
-import api from '../services/api';
+import { UploadCloud, FileText, CheckCircle, AlertCircle, X, Download, FileSpreadsheet } from 'lucide-react';
+import api, { getBackendUrl } from '../services/api';
 import toast from 'react-hot-toast';
 
 export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
@@ -66,7 +66,6 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
 
   const resetModal = () => {
     setStep(1);
-    setFile(null);
     setPreviewData([]);
     setSummary(null);
     onClose();
@@ -94,7 +93,7 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
         />
         <div className="flex flex-col items-center gap-3">
           <div className="p-4 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full">
-            <Upload size={32} />
+            <UploadCloud size={32} />
           </div>
           {loading ? (
             <p className="text-lg font-medium text-slate-700 dark:text-slate-300">Validating file...</p>
@@ -167,7 +166,7 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
             disabled={readyCount === 0}
             className="flex items-center gap-2 px-6 py-2 rounded-xl bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 transition-colors"
           >
-            <Play size={18} />
+            <FileText size={18} />
             Generate {readyCount} Certificates
           </button>
         </div>
@@ -219,8 +218,8 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         {summary.zipUrl && (
           <a 
-            href={`${import.meta.env.VITE_BACKEND_URL}${summary.zipUrl}`}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium shadow-lg shadow-primary-500/30"
+            href={getBackendUrl(summary.zipUrl)}
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-600/30 font-medium"
           >
             <Download size={20} />
             Download Certificates.zip
@@ -228,8 +227,8 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
         )}
         {summary.csvUrl && (
           <a 
-            href={`${import.meta.env.VITE_BACKEND_URL}${summary.csvUrl}`}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors font-medium"
+            href={getBackendUrl(summary.csvUrl)}
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors font-medium"
           >
             <Download size={20} />
             Download Error Report

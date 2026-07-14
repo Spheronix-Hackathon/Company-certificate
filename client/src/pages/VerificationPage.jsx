@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
+import api, { getBackendUrl } from '../services/api';
 import { CheckCircle, XCircle, AlertCircle, Building2, Calendar, User, ShieldCheck } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -142,7 +142,7 @@ export default function VerificationPage() {
             {isVerified && certificate.pdfPath && (
               <div className="pt-6 mt-6 border-t border-slate-200 dark:border-slate-700 flex justify-center">
                 <a 
-                  href={`${import.meta.env.VITE_BACKEND_URL}/${certificate.pdfPath}`} 
+                  href={getBackendUrl(certificate.pdfPath)} 
                   target="_blank" 
                   rel="noreferrer"
                   className="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg shadow-slate-900/20"
