@@ -1,0 +1,20 @@
+{
+  "name": "certificate-generation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spheronix-Hackathon/Company-certificate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Spheronix-Hackathon/Company-certificate/issues"
+  },
+  "homepage": "https://github.com/Spheronix-Hackathon/Company-certificate#readme"
+}
