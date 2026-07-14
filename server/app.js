@@ -10,6 +10,7 @@ const YAML = require('yamljs');
 const fs = require('fs');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const { recoverPdf } = require('./services/certificate.service');
 const app = express();
 
 // Enable trust proxy for Render deployment (if behind load balancer)
@@ -68,6 +69,21 @@ const staticOptions = {
   immutable: true
 };
 app.use('/pdfs', express.static(path.join(__dirname, 'pdfs'), staticOptions));
+
+// Fallback for Render Ephemeral Storage: Regenerate PDF if it doesn't exist on disk
+app.get('/pdfs/:fileName', async (req, res, next) => {
+  try {
+    const certificateId = req.params.fileName.replace('.pdf', '');
+    const pdfPath = await recoverPdf(certificateId);
+    if (!pdfPath) return res.status(404).json({ success: false, message: 'Certificate not found' });
+    
+    // Serve the newly generated file
+    res.sendFile(path.join(__dirname, '..', pdfPath));
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use('/qrcodes', express.static(path.join(__dirname, 'qrcodes'), staticOptions));
 app.use('/bulk', express.static(path.join(__dirname, 'public', 'bulk'), staticOptions));
 

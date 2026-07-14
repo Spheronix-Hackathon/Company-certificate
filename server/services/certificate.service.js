@@ -47,4 +47,15 @@ const createCertificate = async (certificateData, adminId) => {
   }
 };
 
-module.exports = { createCertificate };
+const recoverPdf = async (certificateId) => {
+  const certificate = await Certificate.findOne({ certificateId });
+  if (!certificate) return null;
+
+  const frontendUrl = process.env.FRONTEND_URL || 'https://certificates.spheronixtechnology.com';
+  const verificationUrl = `${frontendUrl}/verify/${certificateId}`;
+  const qrPath = await generateQR(certificateId, verificationUrl);
+  const pdfPath = await generatePDF(certificate, qrPath);
+  return pdfPath;
+};
+
+module.exports = { createCertificate, recoverPdf };
