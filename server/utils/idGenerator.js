@@ -6,12 +6,12 @@ const generateCertificateId = async () => {
   const counter = await CertificateCounter.findOneAndUpdate(
     { year: currentYear },
     { $inc: { sequenceValue: 1 } },
-    { new: true, upsert: true }
+    { returnDocument: 'after', upsert: true }
   );
 
-  // Format: CERT-2026-000001
+  // Format: SPX-2026-000001
   const sequenceStr = counter.sequenceValue.toString().padStart(6, '0');
-  return `CERT-${currentYear}-${sequenceStr}`;
+  return `SPX-${currentYear}-${sequenceStr}`;
 };
 
 module.exports = { generateCertificateId };

@@ -1,5 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+
+// Configure multer for memory storage (for Excel parsing)
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
+
 const {
   addCertificate,
   getCertificates,
@@ -7,9 +15,21 @@ const {
   revokeCertificate,
   deleteCertificate
 } = require('../controllers/certificateController');
+
+const {
+  downloadSampleExcel,
+  validateBulkUpload,
+  generateBulkCertificates
+} = require('../controllers/bulkController');
+
 const { protect, authorize } = require('../middleware/auth');
 
 router.use(protect);
+
+// Bulk Routes (must be before /:id)
+router.get('/bulk/sample', authorize('Super Admin', 'HR Admin'), downloadSampleExcel);
+router.post('/bulk/upload', authorize('Super Admin', 'HR Admin'), upload.single('file'), validateBulkUpload);
+router.post('/bulk/generate', authorize('Super Admin', 'HR Admin'), generateBulkCertificates);
 
 router.route('/')
   .post(authorize('Super Admin', 'HR Admin'), addCertificate)

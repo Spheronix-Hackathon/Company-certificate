@@ -7,12 +7,15 @@ const certificateSchema = new mongoose.Schema({
     unique: true
   },
   studentName: { type: String, required: true },
+  regdNo: { type: String, required: true },
   email: { type: String },
   phone: { type: String },
   college: { type: String, required: true },
-  department: { type: String, required: true },
-  internshipRole: { type: String, required: true },
-  duration: { type: String, required: true },
+  department: { type: String }, // Made optional
+  internshipType: { type: String, required: true }, // e.g., 'Short-term'
+  programName: { type: String, required: true }, // e.g., 'AI-INTEGRATED FULL STACK DEVELOPMENT'
+  internshipRole: { type: String }, // Made optional
+  duration: { type: String }, // Made optional
   startDate: { type: Date },
   endDate: { type: Date },
   issuedDate: { type: Date, default: Date.now },

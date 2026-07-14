@@ -9,12 +9,14 @@ export default function CreateCertificate() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     studentName: '',
+    regdNo: '',
     email: '',
     phone: '',
     college: '',
-    department: '',
-    internshipRole: '',
-    duration: '',
+    internshipType: 'Short-term',
+    programName: '',
+    startDate: '',
+    endDate: '',
   });
 
   const handleChange = (e) => {
@@ -58,6 +60,10 @@ export default function CreateCertificate() {
               <input type="text" name="studentName" required value={formData.studentName} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
             <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Registration Number *</label>
+              <input type="text" name="regdNo" required placeholder="e.g. 23FH1A3220" value={formData.regdNo} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
               <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
@@ -66,16 +72,20 @@ export default function CreateCertificate() {
               <input type="text" name="college" required value={formData.college} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department *</label>
-              <input type="text" name="department" required value={formData.department} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Internship Type *</label>
+              <input type="text" name="internshipType" required placeholder="e.g. Short-term" value={formData.internshipType} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Internship Role *</label>
-              <input type="text" name="internshipRole" required placeholder="e.g. Frontend Developer" value={formData.internshipRole} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Program Name *</label>
+              <input type="text" name="programName" required placeholder="e.g. AI-INTEGRATED FULL STACK DEVELOPMENT" value={formData.programName} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Duration *</label>
-              <input type="text" name="duration" required placeholder="e.g. 6 Months" value={formData.duration} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Start Date *</label>
+              <input type="date" name="startDate" required value={formData.startDate} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">End Date *</label>
+              <input type="date" name="endDate" required value={formData.endDate} onChange={handleChange} className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" />
             </div>
           </div>
 

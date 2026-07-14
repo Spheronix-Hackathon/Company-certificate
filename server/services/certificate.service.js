@@ -10,7 +10,7 @@ const createCertificate = async (certificateData, adminId) => {
     const certificateId = await generateCertificateId();
     
     // 2. Create Verification URL
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL;
     const verificationUrl = `${frontendUrl}/verify/${certificateId}`;
 
     // 3. Generate QR Code

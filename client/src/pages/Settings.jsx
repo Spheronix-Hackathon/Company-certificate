@@ -23,7 +23,7 @@ export default function Settings() {
       if (res.data.data) {
         setSettings(res.data.data);
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to load settings');
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export default function Settings() {
     try {
       await api.put('/settings', settings);
       toast.success('Settings updated successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update settings');
     } finally {
       setSaving(false);

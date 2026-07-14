@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { Award, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -16,7 +16,7 @@ export default function Dashboard() {
     try {
       const res = await api.get('/dashboard/stats');
       setStats(res.data.data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load dashboard statistics');
     } finally {
       setLoading(false);

@@ -1,31 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Plus, MoreVertical, FileText, XCircle } from 'lucide-react';
+import { Search, Plus, FileText, XCircle, FileSpreadsheet } from 'lucide-react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import BulkUploadModal from '../components/BulkUploadModal';
 
 export default function CertificateList() {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
-  const fetchCertificates = async () => {
+  const fetchCertificates = useCallback(async () => {
     try {
       const res = await api.get(`/certificates?search=${search}`);
       setCertificates(res.data.data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load certificates');
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchCertificates();
     }, 500);
     return () => clearTimeout(delayDebounce);
-  }, [search]);
+  }, [search, fetchCertificates]);
 
   const handleRevoke = async (id) => {
     if (window.confirm('Are you sure you want to revoke this certificate?')) {
@@ -33,7 +35,7 @@ export default function CertificateList() {
         await api.post(`/certificates/${id}/revoke`);
         toast.success('Certificate revoked');
         fetchCertificates();
-      } catch (error) {
+      } catch {
         toast.error('Failed to revoke');
       }
     }
@@ -46,12 +48,20 @@ export default function CertificateList() {
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Certificates</h1>
           <p className="text-slate-500 dark:text-slate-400">Manage all generated internship certificates</p>
         </div>
-        <Link 
-          to="/admin/certificates/new"
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-primary-500/30"
-        >
-          <Plus size={20} /> Generate New
-        </Link>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsBulkModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
+          >
+            <FileSpreadsheet size={20} className="text-primary-600 dark:text-primary-400" /> Bulk Generate
+          </button>
+          <Link 
+            to="/admin/certificates/new"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-primary-500/30"
+          >
+            <Plus size={20} /> Generate New
+          </Link>
+        </div>
       </div>
 
       <div className="glass-card overflow-hidden">
@@ -73,9 +83,9 @@ export default function CertificateList() {
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm">
                 <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Certificate ID</th>
-                <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Student Name</th>
-                <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">College</th>
-                <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Regd No</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">College</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Program</th>
                 <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Actions</th>
               </tr>
             </thead>
@@ -94,20 +104,12 @@ export default function CertificateList() {
                     <td className="px-6 py-4">
                       <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">{cert.certificateId}</span>
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-800 dark:text-white">{cert.studentName}</td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{cert.college}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        cert.status === 'Verified' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                        cert.status === 'Revoked' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                        'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                      }`}>
-                        {cert.status}
-                      </span>
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.regdNo}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.college}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.programName}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <a href={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/${cert.pdfPath}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
+                        <a href={`${import.meta.env.VITE_BACKEND_URL}/${cert.pdfPath}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
                           <FileText size={20} />
                         </a>
                         {cert.status === 'Verified' && (
@@ -124,6 +126,14 @@ export default function CertificateList() {
           </table>
         </div>
       </div>
+      
+      <BulkUploadModal 
+        isOpen={isBulkModalOpen} 
+        onClose={() => setIsBulkModalOpen(false)} 
+        onComplete={() => {
+          fetchCertificates();
+        }}
+      />
     </div>
   );
 }

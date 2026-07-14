@@ -8,14 +8,39 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const fs = require('fs');
-
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const app = express();
+
+// Enable trust proxy for Render deployment (if behind load balancer)
+app.set('trust proxy', 1);
+
+// Rate Limiting (100 requests per 15 minutes per IP)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api', limiter);
+
+// Compress all responses
+app.use(compression());
 
 // Security Middleware
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // Allow images to load cross origin
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
@@ -24,8 +49,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Data sanitization against NoSQL query injection
-// Express 5+ compatibility issue with express-mongo-sanitize modifying req.query
-// app.use(mongoSanitize({ replaceWith: '_' }));
+app.use(mongoSanitize());
 
 // Data sanitization against XSS
 // Express 5+ compatibility issue
@@ -36,9 +60,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Serve static files (PDFs, QRs, etc)
-app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
-app.use('/qrcodes', express.static(path.join(__dirname, 'qrcodes')));
+// Serve static files (PDFs, QRs, etc) with Cache-Control headers
+const staticOptions = {
+  maxAge: '1d', // Cache static files for 1 day in production
+  immutable: true
+};
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs'), staticOptions));
+app.use('/qrcodes', express.static(path.join(__dirname, 'qrcodes'), staticOptions));
+app.use('/bulk', express.static(path.join(__dirname, 'public', 'bulk'), staticOptions));
 
 // Swagger Documentation
 const swaggerPath = path.join(__dirname, 'docs', 'swagger.yaml');

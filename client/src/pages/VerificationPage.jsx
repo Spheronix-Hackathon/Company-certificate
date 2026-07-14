@@ -11,19 +11,18 @@ export default function VerificationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const verifyCertificate = async () => {
+      try {
+        const res = await api.get(`/verify/${id}`);
+        setData(res.data);
+      } catch {
+        setError('Certificate Not Found');
+      } finally {
+        setLoading(false);
+      }
+    };
     verifyCertificate();
   }, [id]);
-
-  const verifyCertificate = async () => {
-    try {
-      const res = await api.get(`/verify/${id}`);
-      setData(res.data);
-    } catch (err) {
-      setError('Certificate Not Found');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -101,8 +100,8 @@ export default function VerificationPage() {
                 <p className="text-lg font-bold text-slate-800 dark:text-white">{certificate.studentName}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Certificate ID</p>
-                <p className="text-lg font-mono font-bold text-slate-800 dark:text-white">{certificate.certificateId}</p>
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Registration Number</p>
+                <p className="text-lg font-mono font-bold text-slate-800 dark:text-white">{certificate.regdNo}</p>
               </div>
             </div>
 
@@ -117,9 +116,9 @@ export default function VerificationPage() {
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                  <ShieldCheck size={16} /> Internship Role
+                  <ShieldCheck size={16} /> Program
                 </p>
-                <p className="font-medium text-slate-800 dark:text-white">{certificate.internshipRole}</p>
+                <p className="font-medium text-slate-800 dark:text-white">{certificate.programName}</p>
               </div>
             </div>
 
@@ -128,7 +127,9 @@ export default function VerificationPage() {
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
                   <Calendar size={16} /> Duration
                 </p>
-                <p className="font-medium text-slate-800 dark:text-white">{certificate.duration}</p>
+                <p className="font-medium text-slate-800 dark:text-white">
+                  {certificate.startDate && new Date(certificate.startDate).toLocaleDateString()} to {certificate.endDate && new Date(certificate.endDate).toLocaleDateString()}
+                </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
@@ -138,10 +139,10 @@ export default function VerificationPage() {
               </div>
             </div>
 
-            {isVerified && certificate.pdfUrl && (
+            {isVerified && certificate.pdfPath && (
               <div className="pt-6 mt-6 border-t border-slate-200 dark:border-slate-700 flex justify-center">
                 <a 
-                  href={certificate.pdfUrl} 
+                  href={`${import.meta.env.VITE_BACKEND_URL}/${certificate.pdfPath}`} 
                   target="_blank" 
                   rel="noreferrer"
                   className="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg shadow-slate-900/20"

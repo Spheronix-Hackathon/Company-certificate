@@ -44,7 +44,7 @@ const verifyCertificate = async (req, res, next) => {
         issuedDate: certificate.issuedDate,
         status: certificate.status,
         companyName: 'Tech Innovators Inc.', // In reality, fetch from CompanySettings or inject via Service
-        pdfUrl: `${process.env.BACKEND_URL}/${certificate.pdfPath}`
+        pdfPath: certificate.pdfPath
       },
       verificationTime: new Date().toISOString(),
       verificationId: log._id
