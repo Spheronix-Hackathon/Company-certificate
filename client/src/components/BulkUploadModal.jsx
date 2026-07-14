@@ -32,7 +32,6 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
     
-    setFile(selectedFile);
     setLoading(true);
     
     const formData = new FormData();
@@ -46,7 +45,6 @@ export default function BulkUploadModal({ isOpen, onClose, onComplete }) {
       setStep(2); // Move to preview
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to upload and validate file');
-      setFile(null);
     } finally {
       setLoading(false);
     }
