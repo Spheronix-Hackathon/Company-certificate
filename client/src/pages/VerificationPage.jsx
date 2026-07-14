@@ -64,7 +64,9 @@ export default function VerificationPage() {
             <ShieldCheck className="text-primary-500 w-8 h-8" />
           </div>
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Certificate Verification</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">Official verification portal for {certificate.companyName}</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-2">
+            Official verification portal for <span className="whitespace-nowrap">{certificate.companyName}</span>
+          </p>
         </div>
 
         <div className="glass-card overflow-hidden">
@@ -128,14 +130,16 @@ export default function VerificationPage() {
                   <Calendar size={16} /> Duration
                 </p>
                 <p className="font-medium text-slate-800 dark:text-white">
-                  {certificate.startDate && new Date(certificate.startDate).toLocaleDateString()} to {certificate.endDate && new Date(certificate.endDate).toLocaleDateString()}
+                  {certificate.startDate && format(new Date(certificate.startDate), 'dd MMM yyyy').toUpperCase()} to {certificate.endDate && format(new Date(certificate.endDate), 'dd MMM yyyy').toUpperCase()}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
                   <Calendar size={16} /> Issue Date
                 </p>
-                <p className="font-medium text-slate-800 dark:text-white">{format(new Date(certificate.issuedDate), 'PPP')}</p>
+                <p className="font-medium text-slate-800 dark:text-white">
+                  {format(new Date(certificate.issuedDate), 'dd MMM yyyy').toUpperCase()}
+                </p>
               </div>
             </div>
 
