@@ -78,7 +78,7 @@ app.get('/pdfs/:fileName', async (req, res, next) => {
     if (!pdfPath) return res.status(404).json({ success: false, message: 'Certificate not found' });
     
     // Serve the newly generated file
-    res.sendFile(path.join(__dirname, '..', pdfPath));
+    res.sendFile(path.join(__dirname, pdfPath));
   } catch (error) {
     next(error);
   }
