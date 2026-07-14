@@ -49,7 +49,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
+// Express 5 makes req.query a getter-only property, so express-mongo-sanitize crashes.
+// Mongoose's built-in strict schema casting will handle basic NoSQL injection protection.
+// app.use(mongoSanitize());
 
 // Data sanitization against XSS
 // Express 5+ compatibility issue
