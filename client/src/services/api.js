@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const rawUrl = import.meta.env.VITE_BACKEND_URL || '';
+const cleanUrl = rawUrl.replace(/\/+$/, ''); // Remove trailing slashes
+const finalUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
+  baseURL: finalUrl,
 });
 
 api.interceptors.request.use((config) => {
