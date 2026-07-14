@@ -7,13 +7,13 @@ const VerificationLog = require('../models/VerificationLog');
 const verifyCertificate = async (req, res, next) => {
   try {
     const { certificateId } = req.params;
-    
+
     // Extract IP and basic client info
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const browser = req.headers['user-agent'];
-    
+
     const certificate = await Certificate.findOne({ certificateId, isDeleted: false });
-    
+
     if (!certificate) {
       // Log Not Found
       await VerificationLog.create({
@@ -37,13 +37,17 @@ const verifyCertificate = async (req, res, next) => {
       success: true,
       certificate: {
         studentName: certificate.studentName,
+        regdNo: certificate.regdNo,
         certificateId: certificate.certificateId,
         internshipRole: certificate.internshipRole,
         college: certificate.college,
+        programName: certificate.programName,
         duration: certificate.duration,
+        startDate: certificate.startDate,
+        endDate: certificate.endDate,
         issuedDate: certificate.issuedDate,
         status: certificate.status,
-        companyName: 'Tech Innovators Inc.', // In reality, fetch from CompanySettings or inject via Service
+        companyName: 'Spheronix Technology Pvt. Ltd.',
         pdfPath: certificate.pdfPath
       },
       verificationTime: new Date().toISOString(),
