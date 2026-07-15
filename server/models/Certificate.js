@@ -36,5 +36,11 @@ const certificateSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Indexes for performance
+certificateSchema.index({ isDeleted: 1, createdAt: -1 });
+certificateSchema.index({ status: 1 });
+certificateSchema.index({ studentName: 1 });
+certificateSchema.index({ college: 1 });
+
 const Certificate = mongoose.model('Certificate', certificateSchema);
 module.exports = Certificate;

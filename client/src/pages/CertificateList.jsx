@@ -41,6 +41,30 @@ export default function CertificateList() {
     }
   };
 
+  const handleViewPdf = async (pdfPath) => {
+    try {
+      const loadingToast = toast.loading('Opening certificate...');
+      
+      const response = await api.get(pdfPath, {
+        responseType: 'blob'
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      toast.dismiss(loadingToast);
+      
+      window.open(url, '_blank');
+      
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 10000);
+    } catch (error) {
+      toast.error('Failed to load PDF');
+      toast.dismiss();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -109,9 +133,9 @@ export default function CertificateList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.programName}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <a href={getBackendUrl(cert.pdfPath)} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
+                        <button onClick={() => handleViewPdf(cert.pdfPath)} className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
                           <FileText size={20} />
-                        </a>
+                        </button>
                         {cert.status === 'Verified' && (
                           <button onClick={() => handleRevoke(cert._id)} className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" title="Revoke">
                             <XCircle size={20} />

@@ -7,17 +7,25 @@ const CompanySetting = require('../models/CompanySetting');
 const seedData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    
+
     // Seed Super Admin
-    const adminExists = await User.findOne({ email: 'admin@company.com' });
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminEmail || !adminPassword) {
+      console.error('Error: ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables.');
+      process.exit(1);
+    }
+
+    const adminExists = await User.findOne({ email: adminEmail });
     if (!adminExists) {
       await User.create({
         name: 'Super Admin',
-        email: 'admin@company.com',
-        password: 'password123',
+        email: adminEmail,
+        password: adminPassword,
         role: 'Super Admin'
       });
-      console.log('Super Admin created (admin@company.com / password123)');
+      console.log(`Super Admin created (${adminEmail})`);
     } else {
       console.log('Super Admin already exists.');
     }
@@ -26,10 +34,10 @@ const seedData = async () => {
     const settingsExist = await CompanySetting.findOne();
     if (!settingsExist) {
       await CompanySetting.create({
-        companyName: 'Tech Innovators Inc.',
-        email: 'contact@techinnovators.com',
+        companyName: 'Spheronix Technology pvt. ltd.',
+        email: 'hr@spheronixtechnology.com',
         phone: '+1 234 567 8900',
-        website: 'https://techinnovators.com',
+        website: 'https://www.spheronixtechnology.com',
         themeColor: '#3b82f6'
       });
       console.log('Default Company Settings created.');
