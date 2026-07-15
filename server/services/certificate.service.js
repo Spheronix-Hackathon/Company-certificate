@@ -10,7 +10,7 @@ const createCertificate = async (certificateData, adminId) => {
     const certificateId = await generateCertificateId();
     
     // 2. Create Verification URL
-    const frontendUrl = process.env.FRONTEND_URL;
+    const frontendUrl = process.env.FRONTEND_URL || 'https://certificate.spheronixtechnology.com';
     const verificationUrl = `${frontendUrl}/verify/${certificateId}`;
 
     // 3. Generate QR Code
@@ -51,7 +51,7 @@ const recoverPdf = async (certificateId) => {
   const certificate = await Certificate.findOne({ certificateId });
   if (!certificate) return null;
 
-  const frontendUrl = process.env.FRONTEND_URL || 'https://certificates.spheronixtechnology.com';
+  const frontendUrl = process.env.FRONTEND_URL || 'https://certificate.spheronixtechnology.com';
   const verificationUrl = `${frontendUrl}/verify/${certificateId}`;
   const qrPath = await generateQR(certificateId, verificationUrl);
   const pdfPath = await generatePDF(certificate, qrPath);
