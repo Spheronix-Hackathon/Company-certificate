@@ -34,11 +34,19 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // Allow 
 app.use(cors({
   origin: function (origin, callback) {
     const allowedOrigins = [
-      process.env.FRONTEND_URL
+      'https://certificate.spheronixtechnology.com',
+      'https://company-certificate-frontend.onrender.com'
     ];
+    
+    if (process.env.FRONTEND_URL) {
+      const envUrls = process.env.FRONTEND_URL.split(',').map(url => url.trim());
+      allowedOrigins.push(...envUrls);
+    }
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.warn(`Blocked by CORS: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
