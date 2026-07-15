@@ -45,11 +45,10 @@ export default function CertificateList() {
     try {
       const loadingToast = toast.loading('Opening certificate...');
       
-      const response = await api.get(pdfPath, {
-        responseType: 'blob'
-      });
+      const response = await fetch(getBackendUrl(pdfPath));
+      if (!response.ok) throw new Error('Network response was not ok');
       
-      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       
       toast.dismiss(loadingToast);
