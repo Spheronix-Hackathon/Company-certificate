@@ -10,31 +10,63 @@ export default function CertificateList() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchCertificates = useCallback(async () => {
+  const fetchCertificates = useCallback(async (pageNum = 1, append = false) => {
     try {
-      const res = await api.get(`/certificates?search=${search}&limit=1000`);
-      setCertificates(res.data.data);
+      if (pageNum === 1) setLoading(true);
+      else setLoadingMore(true);
+
+      const res = await api.get(`/certificates?search=${search}&page=${pageNum}&limit=15`);
+      const newCerts = res.data.data;
+      
+      if (append) {
+        setCertificates(prev => [...prev, ...newCerts]);
+      } else {
+        setCertificates(newCerts);
+      }
+      
+      setHasMore(pageNum < res.data.totalPages);
     } catch {
       toast.error('Failed to load certificates');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   }, [search]);
 
   useEffect(() => {
+    setPage(1);
     const delayDebounce = setTimeout(() => {
-      fetchCertificates();
+      fetchCertificates(1, false);
     }, 500);
     return () => clearTimeout(delayDebounce);
   }, [search, fetchCertificates]);
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchCertificates(page, true);
+    }
+  }, [page, fetchCertificates]);
+
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    // Check if we are near the bottom of the scroll container
+    if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !loadingMore && !loading) {
+      setPage(prev => prev + 1);
+    }
+  };
 
   const handleRevoke = async (id) => {
     if (window.confirm('Are you sure you want to revoke this certificate?')) {
       try {
         await api.post(`/certificates/${id}/revoke`);
         toast.success('Certificate revoked');
-        fetchCertificates();
+        fetchCertificates(1, false);
       } catch {
         toast.error('Failed to revoke');
       }
@@ -101,7 +133,7 @@ export default function CertificateList() {
           </div>
         </div>
 
-        <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
+        <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }} onScroll={handleScroll}>
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="text-slate-500 dark:text-slate-400 text-sm">
@@ -113,7 +145,7 @@ export default function CertificateList() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {loading ? (
+              {loading && page === 1 ? (
                 <tr>
                   <td colSpan="5" className="text-center py-8 text-slate-500">Loading certificates...</td>
                 </tr>
@@ -122,28 +154,35 @@ export default function CertificateList() {
                   <td colSpan="5" className="text-center py-8 text-slate-500">No certificates found.</td>
                 </tr>
               ) : (
-                certificates.map((cert) => (
-                  <tr key={cert._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">{cert.certificateId}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.regdNo}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.college}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.programName}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => handleViewPdf(cert.pdfPath)} className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
-                          <FileText size={20} />
-                        </button>
-                        {cert.status === 'Verified' && (
-                          <button onClick={() => handleRevoke(cert._id)} className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" title="Revoke">
-                            <XCircle size={20} />
+                <>
+                  {certificates.map((cert) => (
+                    <tr key={cert._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">{cert.certificateId}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.regdNo}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.college}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{cert.programName}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => handleViewPdf(cert.pdfPath)} className="text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="View PDF">
+                            <FileText size={20} />
                           </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {cert.status === 'Verified' && (
+                            <button onClick={() => handleRevoke(cert._id)} className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" title="Revoke">
+                              <XCircle size={20} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {loadingMore && (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4 text-slate-500 text-sm">Loading more...</td>
+                    </tr>
+                  )}
+                </>
               )}
             </tbody>
           </table>
@@ -154,7 +193,7 @@ export default function CertificateList() {
         isOpen={isBulkModalOpen} 
         onClose={() => setIsBulkModalOpen(false)} 
         onComplete={() => {
-          fetchCertificates();
+          fetchCertificates(1, false);
         }}
       />
     </div>
