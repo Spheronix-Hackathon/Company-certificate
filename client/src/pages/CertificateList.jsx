@@ -101,15 +101,15 @@ export default function CertificateList() {
           </div>
         </div>
 
-        <div className="overflow-auto max-h-[65vh]">
+        <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
           <table className="w-full text-left border-collapse">
-            <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-slate-900 shadow-sm">
+            <thead>
               <tr className="text-slate-500 dark:text-slate-400 text-sm">
-                <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Certificate ID</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">Regd No</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">College</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">Program</th>
-                <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Actions</th>
+                <th className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700 shadow-sm before:content-[''] before:absolute before:bottom-0 before:left-0 before:right-0 before:border-b before:border-slate-200 dark:before:border-slate-700">Certificate ID</th>
+                <th className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider shadow-sm">Regd No</th>
+                <th className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider shadow-sm">College</th>
+                <th className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider shadow-sm">Program</th>
+                <th className="sticky top-0 z-20 bg-slate-50 dark:bg-slate-900 px-6 py-4 font-medium shadow-sm">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
