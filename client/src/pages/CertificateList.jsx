@@ -101,14 +101,14 @@ export default function CertificateList() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-auto max-h-[65vh]">
           <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm">
+            <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-slate-900 shadow-sm">
+              <tr className="text-slate-500 dark:text-slate-400 text-sm">
                 <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Certificate ID</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Regd No</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">College</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Program</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">Regd No</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">College</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">Program</th>
                 <th className="px-6 py-4 font-medium border-b border-slate-200 dark:border-slate-700">Actions</th>
               </tr>
             </thead>
