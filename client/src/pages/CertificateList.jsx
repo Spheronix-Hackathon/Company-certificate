@@ -13,7 +13,7 @@ export default function CertificateList() {
 
   const fetchCertificates = useCallback(async () => {
     try {
-      const res = await api.get(`/certificates?search=${search}`);
+      const res = await api.get(`/certificates?search=${search}&limit=1000`);
       setCertificates(res.data.data);
     } catch {
       toast.error('Failed to load certificates');
